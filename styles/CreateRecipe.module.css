@@ -1,3 +1,50 @@
 .btn:disabled {
     background-color: rgb(134 239 172) !important
   }
+
+.container {
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+  width: 100%;
+  max-height: 100%;
+  display: flex;
+  justify-content: center
+}
+
+.imageContainer {
+  width: 50%;
+  height: 1000px
+}
+
+.image {
+  width: auto;
+  height: 100%;
+  object-fit:'cover'
+}
+
+.formContainer {
+  width: 66.666667%;
+  padding: 2.75rem;
+  padding-top: 2.5rem;
+}
+
+@media (min-width: 800px) {
+  .imageContainer {
+   width: 60%;
+  }
+}
+@media (max-width: 799px) {
+   .container {
+      flex-direction: column
+   }
+   .imageContainer {
+    width: 0%;
+    height: 0%
+   }
+   .image {
+    display: none
+   }
+   .formContainer {
+    width: 100%;
+    padding: 3rem;
+  }
+}

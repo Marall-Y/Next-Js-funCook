@@ -66,12 +66,11 @@ export default function Create() {
   }
 
   return (
-    <div className=" flex justify-center max-h-full">
-      <div className=" bg-white w-full flex max-h-full">
-        <div className="w-1/3 max-h-full">
-          <Image src={foodPhoto} alt="food-photo" className="max-h-full w-full h-full" />
+      <div className = {styles.container}>
+        <div className = {styles.imageContainer}>
+          <Image className={styles.image} src={foodPhoto} alt="food-photo"/>
         </div>
-        <form className="w-2/3 p-20 pt-10 h-44	">
+        <form className={styles.formContainer}>
           <div className="border-b-2 pb-7">
             <h6>
               To create a recipe, follow these steps:
@@ -158,6 +157,5 @@ export default function Create() {
             </div>
         </form>
       </div>
-    </div>
   )
 }
