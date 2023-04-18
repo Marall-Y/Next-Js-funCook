@@ -2,7 +2,7 @@ import { supabaseClient } from "@/utils/supabase"
 import { useAuth, useUser } from "@clerk/nextjs"
 import Image from "next/image"
 import foodPhoto from '../public/images/create-recipe.jpg'
-import { Check,Trash } from "react-feather"
+import { Check,Trash, X } from "react-feather"
 import { useState } from "react"
 import styles from '../styles/CreateRecipe.module.css'
 
@@ -32,6 +32,7 @@ export default function Create() {
   }
 
   const deleteIngredient = (index: number, event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log('hi')
     event.preventDefault()
     let ingredients = [...recipe.ingredients]
     ingredients.splice(index, 1)
@@ -53,13 +54,14 @@ export default function Create() {
     setRecipe({...recipe, steps})
   } 
 
-  const createRecipe = async () => {
+  const createRecipe = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
     const token = await getToken({template: 'supabase'})
     const response = await supabaseClient(token!)
-    await response.from('recipe').insert({
+    await response.from('Recipe').insert({
       user_id : user?.id,
       recipe_creator: user?.fullName,
-      name: recipe.name,
+      recipe_name: recipe.name,
       ingredients: recipe.ingredients,
       steps: recipe.steps
     })
@@ -87,7 +89,14 @@ export default function Create() {
           </div>
           <div className="mb-6 mt-10">
             <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">Recipe Name</label>
-            <input type="text" name="name" id="name" placeholder="Enter recipe name" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            <input
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              type="text"
+              name="name"
+              id="name"
+              onChange={(e)=> setRecipe({...recipe, name:e.target.value})}
+              placeholder="Enter recipe name"
+            />
           </div>
           <div className="mb-6">
             <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700">Recipe Ingredients</label>
@@ -98,7 +107,7 @@ export default function Create() {
                  placeholder="Enter the ingredient name"
                  value={tempIngredient}
                  onChange={(e) => setTempIngredient(e.target.value)}
-                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500" />
                 <button
                   disabled={tempIngredient === ''}
                   onClick={addIngredientInput}
@@ -106,14 +115,19 @@ export default function Create() {
                   <span><Check/></span>
                 </button>
             </div> 
-            {recipe.ingredients.map((ingredient, index) => (
-              <div className="flex mt-3">
-                <input disabled type="text" name="text" placeholder={ingredient} className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500" />
-                <button
-                 onClick={(event) => deleteIngredient(index, event)}
-                 className="ml-5 px-1 py-1 font-medium text-white bg-red-400 rounded-md hover:bg-red-600 "><span><Trash/></span></button>
-              </div>    
-            ))}   
+            <div className="flex flex-wrap p-3">
+              {recipe.ingredients.map((ingredient, index) => (
+                <a className="group m-2">
+                  {/* <input disabled type="text" name="text" placeholder={ingredient} className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500" /> */}
+                  <button
+                    className="flex justify-center relative bg-slate-400 text-white py-2 px-4 rounded-md transition duration-300 hover:bg-slate-600"
+                    onClick={(event) => deleteIngredient(index, event)}>
+                      <X className="text-white transition duration-300 absolute opacity-0 group-hover:opacity-100" size={25}/>
+                    <span className="transition duration-300 opacity-100 group-hover:opacity-0 font-bold">{ingredient}</span>
+                  </button>
+                </a>    
+              ))}  
+            </div>
           </div>
           <div className="mb-6">
             <label htmlFor="message" className="block mb-2 text-sm font-medium text-gray-700">Recipe Steps</label>
@@ -149,7 +163,7 @@ export default function Create() {
             ))}   
             <div className="text-right mt-6">
               <button 
-                onClick={() => createRecipe()}
+                onClick={(event) => createRecipe(event)}
                 type="submit"
                 className="px-4 py-2 font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none">
                 Submit
