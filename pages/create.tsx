@@ -3,6 +3,8 @@ import { useAuth, useUser } from "@clerk/nextjs"
 import { Check,Trash, X } from "react-feather"
 import { useState } from "react"
 import styles from '../styles/CreateRecipe.module.css'
+import Image from "next/image"
+import foodGif from '../public/images/create-recipe-success.gif'
 
 type Recipe = {
   name: string | null,
@@ -15,6 +17,7 @@ export default function Create() {
   const {user} = useUser()
   const [tempIngredient, setTempIngredient] = useState('')
   const [tempStep, setTempStep] = useState('')
+  const [submitSuccess, setSubmitSuccess] = useState(false)
   const [recipe, setRecipe] = useState<Recipe>({
     name: null,
     ingredients: [],
@@ -56,18 +59,31 @@ export default function Create() {
     event.preventDefault()
     const token = await getToken({template: 'supabase'})
     const response = await supabaseClient(token!)
-    await response.from('Recipe').insert({
-      user_id : user?.id,
-      recipe_creator: user?.fullName,
-      recipe_name: recipe.name,
-      ingredients: recipe.ingredients,
-      steps: recipe.steps
-    })
+    try{
+      const rescipeResponse = await response.from('Recipe').insert({
+            user_id : user?.id,
+            recipe_creator: user?.fullName,
+            recipe_name: recipe.name,
+            ingredients: recipe.ingredients,
+            steps: recipe.steps
+          })
+      if (rescipeResponse) {
+        setSubmitSuccess(true)
+        setRecipe({
+          name: null,
+          ingredients: [],
+          steps: []
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    }
+   
   }
 
   return (
     <div className={styles.container}>
-        <form className={styles.formContainer}>
+        {!submitSuccess ? <form className={styles.formContainer}>
           <div className="border-b-2 pb-7">
             <h6>
               To create a recipe, follow these steps:
@@ -164,7 +180,30 @@ export default function Create() {
                 Submit
               </button>
             </div>
-        </form>
+        </form> 
+        :
+        <div className={`${styles.formContainer} flex flex-col justify-center items-center`}> 
+          <div>
+            <Image src={foodGif} alt="food.gif" width={200} height={200}/>
+          </div>
+          <h2 className="font-bold text-2xl mt-5">Great job! Your recipe has been successfully created.</h2>
+          <h4 className="text-md mt-3 text-gray-600">You can now view your posted recipes on your recipe page.</h4>
+          <div className="flex justify-center items-center mt-10">
+              <button 
+                // onClick={(event) => createRecipe(event)}
+                type="submit"
+                className="px-4 py-2 font-medium text-white bg-gray-500 rounded-md hover:bg-gray-600 focus:outline-none w-48 mr-5">
+                Go to My Recipes
+              </button>
+              <button 
+                onClick={() => setSubmitSuccess(false)}
+                type="submit"
+                className="px-4 py-2 font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none w-48">
+                Create New Recipe
+              </button>
+          </div>
+        </div>
+        }
       </div>
   )
 }
