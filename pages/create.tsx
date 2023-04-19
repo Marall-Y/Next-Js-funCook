@@ -1,7 +1,5 @@
 import { supabaseClient } from "@/utils/supabase"
 import { useAuth, useUser } from "@clerk/nextjs"
-import Image from "next/image"
-import foodPhoto from '../public/images/create-recipe.jpg'
 import { Check,Trash, X } from "react-feather"
 import { useState } from "react"
 import styles from '../styles/CreateRecipe.module.css'
@@ -68,10 +66,7 @@ export default function Create() {
   }
 
   return (
-      <div className = {styles.container}>
-        <div className = {styles.imageContainer}>
-          <Image className={styles.image} src={foodPhoto} alt="food-photo"/>
-        </div>
+    <div className={styles.container}>
         <form className={styles.formContainer}>
           <div className="border-b-2 pb-7">
             <h6>
