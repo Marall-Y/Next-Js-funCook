@@ -1,19 +1,24 @@
+import { useRef } from 'react';
 import Image from "next/image";
 import { useState } from "react";
 import { Search } from "react-feather";
+import RecipeCard from "@/components/RecipeCard";
+import useOnScreen from '../hooks/useOnScreen';
 import Food1 from '../public/images/home-transparent-1.png'
 import Food2 from '../public/images/home-transparent-2.png'
 import Food3 from '../public/images/home-transparent-3.png'
 import 'animate.css'
 
 export default function Home() {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const onScreen = useOnScreen(gridRef);
   const [searchTerm, setSearchTerm] = useState("")
 
   return (
   <>
   <div className="flex flex-col justify-center items-center w-full bg-orange-100 p-10">
     <h1 className="font-bold mb-5 mt-20 text-5xl tracking-wide text-slate-600 ">Find a Recipe</h1>
-    <div className="relative mb-5 flex items-center">
+    <div className="relative mb-5 flex items-center z-10">
       <Search size={25} className="absolute top-3 left-3 text-slate-400"/>
       <input
         type="text"
@@ -29,8 +34,12 @@ export default function Home() {
       <Image src={Food3} alt="food gif3" width={400} height={400} className="absolute top-[-13rem] right-[-28rem] animate__animated animate__bounceInRight"/>
     </div>
   </div>
-  <div>
-    
+  <div ref={gridRef} className={`grid grid-cols-3 gap-20 px-52 py-32 animate__animated animate-bounce`}>
+    <RecipeCard />
+    <RecipeCard />
+    <RecipeCard />
+    <RecipeCard />
+    <RecipeCard />
   </div>
   </>
   )
