@@ -2,7 +2,7 @@
 
 const Footer = () => {
     return (
-      <footer className="flex flex-col bg-neutral-100 mt-auto border-t-2 h-64">
+        <footer className="flex flex-col bg-neutral-100 mt-auto border-t-2 h-64">
           <div className="flex justify-between items-center pt-16 pb-8 px-36 w-full">
             <h3 className="font-bold text-gray-500 text-2xl italic tracking-wide">Let's stay in touch!</h3>
             <div className="flex items-center">
@@ -27,7 +27,7 @@ const Footer = () => {
               <h3 className="text-gray-500 text-xs">@2023 FunCook. All rights reserved.</h3>
             </div>
           </div>
-      </footer>
+        </footer>
     )
   }
   
