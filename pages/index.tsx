@@ -34,7 +34,7 @@ export default function Home() {
       <Image src={Food3} alt="food gif3" width={400} height={400} className="absolute top-[-13rem] right-[-28rem] animate__animated animate__bounceInRight"/>
     </div>
   </div>
-  <div ref={gridRef} className={`grid grid-cols-3 gap-20 px-52 py-32 animate__animated animate-bounce`}>
+  <div ref={gridRef} className={`grid gap-20 px-48 md:grid-cols-3 sm:grid-cols-2 max-[1024px]:px-32 py-32`}>
     <RecipeCard />
     <RecipeCard />
     <RecipeCard />

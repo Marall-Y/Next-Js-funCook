@@ -20,7 +20,7 @@ const Header = () => {
             <SignedIn>
                 <div className="flex items-center justify-between w-80">
                     <div className="border-e-2 pr-3">
-                        <Link href="/create" prefetch>
+                        <Link href="/create">
                             <button
                             className="rounded-full bg-orange-400 hover:bg-orange-700 text-white px-4 py-3 font-bold tracking-widest transition ease-in-out hover:-translate-y-1 hover:scale-110">
                                 Create Recipe 
