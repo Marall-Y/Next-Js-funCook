@@ -1,17 +1,30 @@
-import { useRef } from 'react';
 import Image from "next/image";
 import { useState } from "react";
+import { useAuth} from "@clerk/nextjs"
 import { Search } from "react-feather";
 import RecipeCard from "@/components/RecipeCard";
-import useOnScreen from '../hooks/useOnScreen';
+import { supabaseClient } from '@/utils/supabase';
 import Food1 from '../public/images/home-transparent-1.png'
 import Food2 from '../public/images/home-transparent-2.png'
 import Food3 from '../public/images/home-transparent-3.png'
 import 'animate.css'
+import { createClient } from "@supabase/supabase-js";
 
-export default function Home() {
-  const gridRef = useRef<HTMLDivElement>(null);
-  const onScreen = useOnScreen(gridRef);
+interface Recipe {
+  created_at: string;
+  id: number;
+  user_image_url: string;
+  ingredients: string[];
+  recipe_creator: string;
+  recipe_name: string;
+  steps: string[];
+}
+
+interface Props {
+  recipes: Recipe[];
+}
+
+const Home: React.FC<Props> = ({ recipes }) => {
   const [searchTerm, setSearchTerm] = useState("")
 
   return (
@@ -34,13 +47,34 @@ export default function Home() {
       <Image src={Food3} alt="food gif3" width={400} height={400} className="absolute top-[-13rem] right-[-28rem] animate__animated animate__bounceInRight"/>
     </div>
   </div>
-  <div ref={gridRef} className={`grid gap-20 px-48 md:grid-cols-3 sm:grid-cols-2 max-[1024px]:px-32 py-32`}>
-    <RecipeCard />
-    <RecipeCard />
-    <RecipeCard />
-    <RecipeCard />
-    <RecipeCard />
+  <div className={`grid gap-20 px-48 md:grid-cols-3 sm:grid-cols-2 max-[1024px]:px-32 py-32`}>
+    {recipes.map((recipe) => {
+      return <RecipeCard key={recipe.id} data={recipe}/>
+    })}
   </div>
   </>
   )
 }
+
+
+export async function getStaticProps() {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_KEY!
+  )
+  let { data, error } = await supabase.from('Recipe').select('*');
+
+  if (error) {
+    console.log(error)
+  }
+
+  return {
+    props: {
+      recipes: data,
+    },
+    revalidate: 120, // Regenerate the page every 120 seconds
+  };
+}
+
+
+export default Home

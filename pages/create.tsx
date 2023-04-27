@@ -5,12 +5,16 @@ import { useState } from "react"
 import styles from '../styles/CreateRecipe.module.css'
 import Image from "next/image"
 import foodGif from '../public/images/create-recipe-success.gif'
+import Dropdown from "@/components/Dropdown"
 
 type Recipe = {
   name: string | null,
   ingredients: string[],
   steps: string[]
 }
+
+const hourList = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]
+const minuteList = [0,5,10,15,20,25,30,35,40,45,50,55]
 
 export default function Create() {
   const {getToken} = useAuth()
@@ -21,7 +25,9 @@ export default function Create() {
   const [recipe, setRecipe] = useState<Recipe>({
     name: null,
     ingredients: [],
-    steps: []
+    steps: [],
+    hour: null,
+    minute: null
   });
 
   const addIngredientInput = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -33,7 +39,6 @@ export default function Create() {
   }
 
   const deleteIngredient = (index: number, event: React.MouseEvent<HTMLButtonElement>) => {
-    console.log('hi')
     event.preventDefault()
     let ingredients = [...recipe.ingredients]
     ingredients.splice(index, 1)
@@ -62,6 +67,7 @@ export default function Create() {
     try{
       const rescipeResponse = await response.from('Recipe').insert({
             user_id : user?.id,
+            user_image_url: user?.profileImageUrl,
             recipe_creator: user?.fullName,
             recipe_name: recipe.name,
             ingredients: recipe.ingredients,
@@ -96,7 +102,7 @@ export default function Create() {
                 <li>- Continue this process until you have entered all the required ingredients and steps.</li>
               </ul>
             </h6>
-            <h6 className="mt-2 font-bold"><span role="img" aria-label="baking">🧁</span> That's it! By following these simple steps, you'll be able to create a delicious recipe that you can enjoy and share with others </h6>
+            <h6 className="mt-2 font-bold"><span role="img" aria-label="baking"></span> That&apos;s it! By following these simple steps, you&apos;ll be able to create a delicious recipe that you can enjoy and share with others</h6>
           </div>
           <div className="mb-6 mt-10">
             <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">Recipe Name</label>
@@ -108,6 +114,13 @@ export default function Create() {
               onChange={(e)=> setRecipe({...recipe, name:e.target.value})}
               placeholder="Enter recipe name"
             />
+          </div>
+          <div className="mb-6 mt-10">
+            <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">Total Cooking Time</label>
+            <div className="flex">
+              <Dropdown placeHolder={"Hour"} options={hourList} onChange={(value: number) => setRecipe({...recipe, hour: value})}/>
+              <Dropdown placeHolder={"Min"} options={minuteList} onChange={(value : number) => setRecipe({...recipe, minute: value})}/>
+            </div>
           </div>
           <div className="mb-6">
             <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700">Recipe Ingredients</label>
@@ -128,8 +141,7 @@ export default function Create() {
             </div> 
             <div className="flex flex-wrap p-3">
               {recipe.ingredients.map((ingredient, index) => (
-                <a className="group m-2">
-                  {/* <input disabled type="text" name="text" placeholder={ingredient} className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500" /> */}
+                <a className="group m-2" key={ingredient}>
                   <button
                     className="flex justify-center relative bg-slate-400 text-white py-2 px-4 rounded-md transition duration-300 hover:bg-slate-600"
                     onClick={(event) => deleteIngredient(index, event)}>
@@ -160,7 +172,7 @@ export default function Create() {
             </div>
           </div>
           {recipe.steps.map((step, index) => (
-              <div className="flex mt-3">
+              <div className="flex mt-3" key={step}>
                  <button disabled className="mr-5 px-3 py-1 font-medium text-white bg-slate-400 rounded-md">
                   {index + 1}
                  </button>
