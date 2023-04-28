@@ -96,7 +96,16 @@ export default function Create() {
     }
   }
 
-  return (
+const handleDisableButton = () => {
+    return (
+      recipe.name === null ||
+      recipe.ingredients.length === 0 ||
+      recipe.steps.length === 0 || 
+      (recipe.hour === null && recipe.minute === null)
+    )
+  }
+
+ return (
     <div className={styles.container}>
         {!submitSuccess ? <form className={styles.formContainer}>
           <div className="border-b-2 pb-7">
@@ -113,10 +122,10 @@ export default function Create() {
             </h6>
             <h6 className="mt-2 font-bold"><span role="img" aria-label="baking"></span> That&apos;s it! By following these simple steps, you&apos;ll be able to create a delicious recipe that you can enjoy and share with others</h6>
           </div>
-          <div className="flex items-center mt-10 mb-6">
+          <div className="flex mt-10 mb-6">
             <div className="flex flex-col w-1/2 mr-4">
               <div className="mb-2">
-                <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">Recipe Name</label>
+                <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">Recipe Name<span className="text-red-600">*</span></label>
                 <input
                   className="w-2/3 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   type="text"
@@ -127,7 +136,7 @@ export default function Create() {
                 />
               </div>
               <div className="mt-3">
-                <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">Total Cooking Time</label>
+                <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">Total Cooking Time<span className="text-red-600">*</span></label>
                 <div className="flex">
                   <Dropdown placeHolder={"Hour"} options={hourList} onChange={(value: number) => setRecipe({...recipe, hour: value})}/>
                   <Dropdown placeHolder={"Min"} options={minuteList} onChange={(value : number) => setRecipe({...recipe, minute: value})}/>
@@ -140,7 +149,7 @@ export default function Create() {
             </div>
           </div>
           <div className="mb-3">
-            <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700">Recipe Ingredients</label>
+            <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700">Recipe Ingredients<span className="text-red-600">*</span></label>
             <div className="flex items-center">
                 <input
                  type="text"
@@ -170,7 +179,7 @@ export default function Create() {
             </div>
           </div>
           <div className="mb-6">
-            <label htmlFor="message" className="block mb-2 text-sm font-medium text-gray-700">Recipe Steps</label>
+            <label htmlFor="message" className="block mb-2 text-sm font-medium text-gray-700">Recipe Steps<span className="text-red-600">*</span></label>
             <div className="flex items-center">
               <textarea
                 onChange={(e) => setTempStep(e.target.value)}
@@ -204,6 +213,7 @@ export default function Create() {
             <div className="text-right mt-6">
               <button 
                 onClick={(event) => createRecipe(event)}
+                disabled={handleDisableButton()}
                 type="submit"
                 className="px-4 py-2 font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none">
                 Submit
