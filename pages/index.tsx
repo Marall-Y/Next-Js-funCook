@@ -11,13 +11,15 @@ import 'animate.css'
 import { createClient } from "@supabase/supabase-js";
 
 interface Recipe {
-  created_at: string;
-  id: number;
-  user_image_url: string;
-  ingredients: string[];
-  recipe_creator: string;
-  recipe_name: string;
-  steps: string[];
+    created_at: string;
+    id: number;
+    user_image_url: string;
+    recipe_image_url: string;
+    ingredients: string[];
+    recipe_creator: string;
+    recipe_name: string;
+    steps: string[];
+    cooking_time: string;
 }
 
 interface Props {
