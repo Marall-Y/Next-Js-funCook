@@ -6,11 +6,15 @@ import styles from '../styles/CreateRecipe.module.css'
 import Image from "next/image"
 import foodGif from '../public/images/create-recipe-success.gif'
 import Dropdown from "@/components/Dropdown"
+import FileUploader from "@/components/ImageUploader"
 
 type Recipe = {
   name: string | null,
   ingredients: string[],
-  steps: string[]
+  steps: string[],
+  hour: null | number,
+  minute: null | number,
+  image_url: null | string
 }
 
 const hourList = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]
@@ -27,7 +31,8 @@ export default function Create() {
     ingredients: [],
     steps: [],
     hour: null,
-    minute: null
+    minute: null,
+    image_url: null
   });
 
   const addIngredientInput = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -68,23 +73,27 @@ export default function Create() {
       const rescipeResponse = await response.from('Recipe').insert({
             user_id : user?.id,
             user_image_url: user?.profileImageUrl,
+            recipe_image_url: recipe.image_url,
             recipe_creator: user?.fullName,
             recipe_name: recipe.name,
             ingredients: recipe.ingredients,
-            steps: recipe.steps
+            steps: recipe.steps,
+            cooking_time: `${recipe.hour ?? ''} ${recipe.hour ? recipe.hour === 1 ? 'Hour' : 'Hours' : ''}, ${recipe.minute ?? ''} ${recipe.minute ? recipe.minute === 1 ? 'Minute' : 'Minutes' : ''}`
           })
       if (rescipeResponse) {
         setSubmitSuccess(true)
         setRecipe({
           name: null,
           ingredients: [],
-          steps: []
+          steps: [],
+          hour: null,
+          minute: null,
+          image_url: null
         })
       }
     } catch (error) {
       console.log(error)
     }
-   
   }
 
   return (
@@ -104,25 +113,33 @@ export default function Create() {
             </h6>
             <h6 className="mt-2 font-bold"><span role="img" aria-label="baking"></span> That&apos;s it! By following these simple steps, you&apos;ll be able to create a delicious recipe that you can enjoy and share with others</h6>
           </div>
-          <div className="mb-6 mt-10">
-            <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">Recipe Name</label>
-            <input
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-              type="text"
-              name="name"
-              id="name"
-              onChange={(e)=> setRecipe({...recipe, name:e.target.value})}
-              placeholder="Enter recipe name"
-            />
-          </div>
-          <div className="mb-6 mt-10">
-            <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">Total Cooking Time</label>
-            <div className="flex">
-              <Dropdown placeHolder={"Hour"} options={hourList} onChange={(value: number) => setRecipe({...recipe, hour: value})}/>
-              <Dropdown placeHolder={"Min"} options={minuteList} onChange={(value : number) => setRecipe({...recipe, minute: value})}/>
+          <div className="flex items-center mt-10 mb-6">
+            <div className="flex flex-col w-1/2 mr-4">
+              <div className="mb-2">
+                <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">Recipe Name</label>
+                <input
+                  className="w-2/3 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  type="text"
+                  name="name"
+                  id="name"
+                  onChange={(e)=> setRecipe({...recipe, name:e.target.value})}
+                  placeholder="Enter recipe name"
+                />
+              </div>
+              <div className="mt-3">
+                <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">Total Cooking Time</label>
+                <div className="flex">
+                  <Dropdown placeHolder={"Hour"} options={hourList} onChange={(value: number) => setRecipe({...recipe, hour: value})}/>
+                  <Dropdown placeHolder={"Min"} options={minuteList} onChange={(value : number) => setRecipe({...recipe, minute: value})}/>
+                </div>
+              </div>
+            </div>
+            <div className="w-1/2">
+              <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">Photo (Optional)</label> 
+              <FileUploader onChange={(value : string) => setRecipe({...recipe, image_url: value})}/>
             </div>
           </div>
-          <div className="mb-6">
+          <div className="mb-3">
             <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700">Recipe Ingredients</label>
             <div className="flex items-center">
                 <input

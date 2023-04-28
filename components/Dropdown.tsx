@@ -4,7 +4,6 @@ import { ChevronDown } from 'react-feather';
 interface DropdownProps {
     placeHolder: string
     options: number[];
-    value: number;
     onChange: (value: number) => void;
   }
 
