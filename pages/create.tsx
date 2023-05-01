@@ -7,6 +7,9 @@ import Image from "next/image"
 import foodGif from '../public/images/create-recipe-success.gif'
 import Dropdown from "@/components/Dropdown"
 import FileUploader from "@/components/ImageUploader"
+import { v4 as uuidv4 } from 'uuid';
+import { createClient } from "@supabase/supabase-js"
+
 
 type Recipe = {
   name: string | null,
@@ -14,7 +17,7 @@ type Recipe = {
   steps: string[],
   hour: null | number,
   minute: null | number,
-  image_url: null | string
+  image: null | File
 }
 
 const hourList = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]
@@ -23,6 +26,7 @@ const minuteList = [0,5,10,15,20,25,30,35,40,45,50,55]
 export default function Create() {
   const {getToken} = useAuth()
   const {user} = useUser()
+  const fileUUID = uuidv4();
   const [tempIngredient, setTempIngredient] = useState('')
   const [tempStep, setTempStep] = useState('')
   const [submitSuccess, setSubmitSuccess] = useState(false)
@@ -32,7 +36,7 @@ export default function Create() {
     steps: [],
     hour: null,
     minute: null,
-    image_url: null
+    image: null
   });
 
   const addIngredientInput = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -69,18 +73,43 @@ export default function Create() {
     event.preventDefault()
     const token = await getToken({template: 'supabase'})
     const response = await supabaseClient(token!)
-    try{
-      const rescipeResponse = await response.from('Recipe').insert({
-            user_id : user?.id,
-            user_image_url: user?.profileImageUrl,
-            recipe_image_url: recipe.image_url,
-            recipe_creator: user?.fullName,
-            recipe_name: recipe.name,
-            ingredients: recipe.ingredients,
-            steps: recipe.steps,
-            cooking_time: `${recipe.hour ?? ''} ${recipe.hour ? recipe.hour === 1 ? 'Hour' : 'Hours' : ''}, ${recipe.minute ?? ''} ${recipe.minute ? recipe.minute === 1 ? 'Minute' : 'Minutes' : ''}`
-          })
-      if (rescipeResponse) {
+    let imagePublicUrl = null;
+    
+    if (recipe.image) {
+      const recipeFormData = new FormData()
+      recipe.image && recipeFormData.append('recipe_image', recipe.image)   
+      const fileName = `${fileUUID}-${recipe.image?.name}`;
+      // supabase request without authentication
+      // save image in supabase storage
+      const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_KEY!)
+      const { data: storageData, error: storageError } = await supabase.storage.from("funCookStorage").upload(fileName, recipe.image, {cacheControl: "3600",upsert: false});
+
+      if (storageData) {
+          imagePublicUrl = response.storage
+          .from('funCookStorage')
+          .getPublicUrl(fileName);
+        } else {
+          console.log(storageError)
+      }
+  }
+
+    // set recipe data in supabase recipe table
+    const {error: recipeError, status} = await response
+      .from('Recipe')
+      .insert(
+        {
+          user_id : user?.id,
+          user_image: user?.profileImageUrl,
+          recipe_creator: user?.fullName,
+          recipe_name: recipe.name,
+          ingredients: recipe.ingredients,
+          steps: recipe.steps,
+          cooking_time: `${recipe.hour ?? ''} ${recipe.hour ? recipe.hour === 1 ? 'Hour' : 'Hours' : ''}, ${recipe.minute ?? ''} ${recipe.minute ? recipe.minute === 1 ? 'Minute' : 'Minutes' : ''}`,
+          recipe_image: imagePublicUrl?.data.publicUrl
+        },
+      );
+
+      if (status == 201){
         setSubmitSuccess(true)
         setRecipe({
           name: null,
@@ -88,12 +117,11 @@ export default function Create() {
           steps: [],
           hour: null,
           minute: null,
-          image_url: null
+          image: null
         })
+      } else {
+        console.log(recipeError)
       }
-    } catch (error) {
-      console.log(error)
-    }
   }
 
 const handleDisableButton = () => {
@@ -145,7 +173,7 @@ const handleDisableButton = () => {
             </div>
             <div className="w-1/2">
               <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">Photo (Optional)</label> 
-              <FileUploader onChange={(value : string) => setRecipe({...recipe, image_url: value})}/>
+              <FileUploader onChange={(value : File) => setRecipe({...recipe, image: value})}/>
             </div>
           </div>
           <div className="mb-3">

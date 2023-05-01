@@ -5,10 +5,12 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'images.clerk.dev',
-        port: '',
-        pathname: '/oauth_google/**',
+        hostname: 'otmhkfujxehpaywcdtxa.supabase.co'
       },
+      {
+        protocol: 'https',
+        hostname: 'images.clerk.dev'
+      }
     ],
   },
 }

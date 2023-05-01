@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-function FileUploader({onChange} : {onChange: (value: string) => void}) {
+function FileUploader({onChange} : {onChange: (value: File) => void}) {
   const [imageURL, setImageURL] = useState<string>('');
   const [imageStyle, setImageStyle] = useState<React.CSSProperties>({});
 
@@ -12,7 +12,7 @@ function FileUploader({onChange} : {onChange: (value: string) => void}) {
     reader.onload = () => {
       setImageURL(reader.result as string);
       setImageStyle({ backgroundImage: `url(${reader.result})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center center' });
-      onChange(reader.result as string)
+      onChange(acceptedFiles[0])
     };
 
     reader.readAsDataURL(file);
