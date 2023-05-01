@@ -72,7 +72,7 @@ export default function Create() {
   const createRecipe = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
     const token = await getToken({template: 'supabase'})
-    const response = await supabaseClient(token!)
+    const response = await supabaseClient({ supabaseAccessToken: token!, requireAuthorization: true })
     let imagePublicUrl = null;
     
     if (recipe.image) {

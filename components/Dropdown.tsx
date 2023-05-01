@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ChevronDown } from 'react-feather';
 
 interface DropdownProps {
-    placeHolder: string
+    placeHolder: string;
     options: number[];
     onChange: (value: number) => void;
   }

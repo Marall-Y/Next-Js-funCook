@@ -1,22 +1,38 @@
-
+import { supabaseClient } from "@/utils/supabase"
+import { useState } from "react"
+import { toast } from 'react-toastify';
 
 const Footer = () => {
+  const [email, setEmail] = useState<string | ''>('')
+
+  const handleSubscribe = async () => {
+    const response = await supabaseClient({ supabaseAccessToken: null, requireAuthorization: false })
+    const {data, error} = await response.from('emails').insert({
+      email_address: email
+    })
+
+    if (!error){
+      setEmail('')
+      toast.success('Thanks For Subscribing')
+    }
+  }
+
     return (
         <footer className="flex flex-col bg-neutral-100 mt-auto border-t-2 h-64">
           <div className="flex justify-between items-center pt-16 pb-8 px-36 w-full">
             <h3 className="font-bold text-gray-500 text-2xl italic tracking-wide">Let&apos;s stay in touch!</h3>
             <div className="flex items-center">
                 <input
-                    type="text"
+                    type="email"
                     placeholder="Your Email Address"
                     className="rounded-l-lg py-2 px-8 border-t mr-0 border-b border-l text-orange-800 border-gray-200 bg-white"
-                    // onChange={handleInputChange}
-                    // value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    value={email}
                 />
                 <button
                     type="button"
                     className="bg-orange-400 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-r-lg"
-                    // onClick={handleSearch}
+                    onClick={handleSubscribe}
                 >
                     Subscribe
                 </button>
