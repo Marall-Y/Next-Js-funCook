@@ -7,7 +7,7 @@ const Footer = () => {
 
   const handleSubscribe = async () => {
     const response = await supabaseClient({ supabaseAccessToken: null, requireAuthorization: false })
-    const {data, error} = await response.from('emails').insert({
+    const {error} = await response.from('emails').insert({
       email_address: email
     })
 

@@ -60,11 +60,8 @@ const Home: React.FC<Props> = ({ recipes }) => {
 
 
 export async function getStaticProps() {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_KEY!
-  )
-  let { data, error } = await supabase.from('Recipe').select('*');
+  const response = await supabaseClient({ supabaseAccessToken: null, requireAuthorization: false })
+  let { data, error } = await response.from('Recipe').select('*');
 
   if (error) {
     console.log(error)

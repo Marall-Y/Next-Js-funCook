@@ -81,8 +81,8 @@ export default function Create() {
       const fileName = `${fileUUID}-${recipe.image?.name}`;
       // supabase request without authentication
       // save image in supabase storage
-      const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_KEY!)
-      const { data: storageData, error: storageError } = await supabase.storage.from("funCookStorage").upload(fileName, recipe.image, {cacheControl: "3600",upsert: false});
+      const response = await supabaseClient({ supabaseAccessToken: null, requireAuthorization: false })
+      const { data: storageData, error: storageError } = await response.storage.from("funCookStorage").upload(fileName, recipe.image, {cacheControl: "3600",upsert: false});
 
       if (storageData) {
           imagePublicUrl = response.storage
