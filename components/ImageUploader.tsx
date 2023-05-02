@@ -5,7 +5,7 @@ function FileUploader({onChange} : {onChange: (value: File) => void}) {
   const [imageURL, setImageURL] = useState<string>('');
   const [imageStyle, setImageStyle] = useState<React.CSSProperties>({});
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  const onDrop = ((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     const reader = new FileReader();
 
@@ -16,7 +16,7 @@ function FileUploader({onChange} : {onChange: (value: File) => void}) {
     };
 
     reader.readAsDataURL(file);
-  }, []);
+  });
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
