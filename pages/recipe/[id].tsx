@@ -1,5 +1,7 @@
 import { supabaseClient } from "@/utils/supabase"
 import { GetStaticPaths, GetStaticProps } from "next"
+import bg from '../../public/images/recipe cart.jpg'
+import Image from "next/image";
 
 type RecipeParams = {
     id: string;
@@ -20,6 +22,24 @@ interface Recipe {
 
 export default function RecipeView ({recipe} : {recipe: Recipe}) {
     console.log(recipe)
+    return(
+      <>
+      <div className="flex w-full w-100" style={{height: '30rem'}}>
+        <video autoPlay loop muted playsInline className='w-full h-full object-cover'>
+          <source src="https://otmhkfujxehpaywcdtxa.supabase.co/storage/v1/object/public/funCookStorage/video-2.mp4?t=2023-05-03T14%3A57%3A55.066Z"/>
+        </video>      
+      </div>
+      <div className="flex justify-center px-48 py-32">
+        <div className="mr-4">
+          <h3 className="text-base text-slate-400">Reviewd By 1000 People</h3>
+        </div>
+        <div className="bg-white rounded-lg shadow-lg">
+          <Image className="object-cover rounded-t-lg object-center w-full h-auto m-auto"  src={recipe.recipe_image ?? bg} alt="Card Image" width={300} height={1000}/>                 
+        </div>
+      </div>
+    </>
+    )
+   
 }
 
   

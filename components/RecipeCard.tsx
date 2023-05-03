@@ -35,7 +35,7 @@ export default function RecipeCard({data}: Recipe) {
     <Link href={`/recipe/${data.id}`}>
       <div className="bg-white rounded-lg shadow-lg cursor-pointer transition ease-in-out hover:-translate-y-1 hover:scale-110">
           <div>
-            {/* <img className="object-cover rounded-t-lg object-center w-full h-auto m-auto"  src={data.recipe_image ?? Logo} alt="Card Image"/>           */}
+            <Image className="object-cover rounded-t-lg object-center w-full h-auto m-auto"  src={data.recipe_image ?? Logo} alt="Card Image" width={300} height={300}/>          
           </div>
           <div className="px-4 py-3 flex items-center text-slate-400"><Clock className="text-slate-400 mr-1" size={20}/>{handleCookingTime(data.cooking_time)}</div>
           <div className="flex flex-col px-4">
