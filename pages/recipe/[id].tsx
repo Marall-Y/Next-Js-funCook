@@ -31,7 +31,7 @@ export default function RecipeView ({recipe} : {recipe: Recipe}) {
         </video>      
       </div>
       <div className="flex justify-between mx-48 px-20 py-32 rounded-lg shadow-lg border-2">
-        <div className="mr-4 p-10 pt-0">
+        <div className="mr-4 p-10 pt-0" style={{flex: '70%'}}>
           <h1 className="font-bold text-gray-700 text-3xl italic tracking-wide mb-2">{recipe?.recipe_name}</h1>
           <h3 className="text-base text-slate-400 mb-12">Reviewd By 1000 People</h3>
           <div className="flex mt-10">
@@ -64,8 +64,14 @@ export default function RecipeView ({recipe} : {recipe: Recipe}) {
             </div>
           </div>
         </div>
-        <div className="rounded-lg shadow-lg h-24 mb-5">
-          <Image className="object-cover rounded-lg object-center w-full h-auto"  src={recipe?.recipe_image ?? bg} alt="Card Image" width={500} height={1000}/>                 
+        <div className="flex sticky top-20 h-96 mb-5" style={{flex: '30%'}}>
+          <Image
+            className="object-contain rounded-lg object-center w-full h-full"
+            src={recipe?.recipe_image ?? bg}
+            alt="Card Image"
+            width={600}
+            height={400}
+          />
         </div>
       </div>
     </>
