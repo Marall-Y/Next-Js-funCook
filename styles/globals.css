@@ -7,60 +7,46 @@ button:disabled {
 }
 
 .number {
-  display: inline-block;
-  width: 1.5rem;
-  height: 1.5rem;
-  font-size: 1rem;
-  font-weight: bold;
-  text-align: center;
-  line-height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
-  background-color: #000;
-  color: #fff;
-  margin-right: 0.5rem;
+  border: 1px solid rgb(148 163 184);;
+  font-size: 1rem;
 }
 
 .numbered-list {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  margin-bottom: 3rem
-}
-
-.numbered-list-item {
-  display: flex;
-  align-items: flex-start;
+  margin-bottom: 2rem
 }
 
 .numbered-list-number {
-  position: relative;
-  display: inline-block;
-  margin-right: 10px;
-  font-size: 1rem;
-  font-weight: bold;
-  border-radius: 50%;
-  width: 1.5rem;
-  height: 1.5rem;;
-  text-align: center;
-  line-height: 1.5rem;
-  background-color: black;
-  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center
 }
 
 .numbered-list-line {
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
   width: 2px;
-  height: 50%;
-  background-color: black;
+  height: 3rem;
+  background-color: rgb(148 163 184);
 }
 
 .numbered-list-text {
-  font-size: 18px;
-  line-height: 1.5;
+  margin-left: 1rem
+}
+
+.check-icon {
+  display:inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 9999px;
+  background-color: rgb(34 197 94);
+  color: rgb(255 255 255);
+  margin-top: -1rem;
+  margin-left: -1rem
 }

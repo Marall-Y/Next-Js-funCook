@@ -2,6 +2,7 @@ import { supabaseClient } from "@/utils/supabase"
 import { GetStaticPaths, GetStaticProps } from "next"
 import bg from '../../public/images/recipe cart.jpg'
 import Image from "next/image";
+import { Check } from "react-feather";
 
 type RecipeParams = {
     id: string;
@@ -21,7 +22,7 @@ interface Recipe {
   }
 
 export default function RecipeView ({recipe} : {recipe: Recipe}) {
-    console.log(recipe.ingredients)
+    
     return(
       <>
       <div className="flex w-full w-100" style={{height: '30rem'}}>
@@ -30,36 +31,41 @@ export default function RecipeView ({recipe} : {recipe: Recipe}) {
         </video>      
       </div>
       <div className="flex justify-between mx-48 px-20 py-32 rounded-lg shadow-lg border-2">
-        <div className="mr-4">
-          <h1 className="font-bold text-gray-700 text-3xl italic tracking-wide mb-2">{recipe.recipe_name}</h1>
+        <div className="mr-4 p-10 pt-0">
+          <h1 className="font-bold text-gray-700 text-3xl italic tracking-wide mb-2">{recipe?.recipe_name}</h1>
           <h3 className="text-base text-slate-400 mb-12">Reviewd By 1000 People</h3>
           <div className="flex mt-10">
             <h2 className="font-bold text-gray-700 text-2xl italic tracking-wide mr-7">Ingredients:</h2>
             <div>
-              {recipe.ingredients?.map((ingredient, index) => {
+              {recipe?.ingredients?.map((ingredient, index) => {
                 return <div key={ingredient} className="mb-8">
-                  <span className="number">{index + 1}</span><span>{ingredient}</span>
+                  <span className="number mr-3">{index + 1}</span><span>{ingredient}</span>
                 </div>
               })}
             </div>
           </div>
-          <div className="flex mt-10">
+          <div className="flex mt-10 border-t-2 pt-10">
             <h2 className="font-bold text-gray-700 text-2xl italic tracking-wide mr-24">Steps:</h2>
-            <div className="numbered-list pr-32">
-              {recipe.steps?.map((step, index) => {
-                return <div key={step} className="numbered-list">
-                  <div className="numbered-list-number">
-                    {index + 1}
-                  <div className="numbered-list-line"></div>
+            <div className="pr-32">
+              {recipe?.steps?.map((step, index) => {
+                return (
+                  <div key={step} className="numbered-list">
+                    <div className="numbered-list-number">
+                      <div className="number mb-3"> {index + 1} </div>
+                      <div className="numbered-list-line"></div>
+                    </div>
+                    <div className="numbered-list-text">{step}</div>
                   </div>
-                  <div className="numbered-list-text">{step}</div>
-                </div>
+                )
               })}
+              <div className="check-icon">
+                <Check size={35} />
+              </div>
             </div>
           </div>
         </div>
         <div className="rounded-lg shadow-lg h-24 mb-5">
-          <Image className="object-cover rounded-lg object-center w-full h-auto"  src={recipe.recipe_image ?? bg} alt="Card Image" width={500} height={1000}/>                 
+          <Image className="object-cover rounded-lg object-center w-full h-auto"  src={recipe?.recipe_image ?? bg} alt="Card Image" width={500} height={1000}/>                 
         </div>
       </div>
     </>
