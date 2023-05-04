@@ -3,6 +3,7 @@ import { Clock } from "react-feather";
 import Logo from '../public/images/logo.png'
 import styles from '../styles/RecipeCard.module.css'
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 interface Recipe {
   data: {
@@ -19,8 +20,9 @@ interface Recipe {
 }
 
 export default function RecipeCard({data}: Recipe) {
-  
+  const router = useRouter()
   const createdDate = new Date(data.created_at)
+
   const handleCookingTime = (timeString: string) => {
     const [hour, minute] = timeString.split(",").map((str) => str.trim());
     return (
@@ -31,9 +33,12 @@ export default function RecipeCard({data}: Recipe) {
     );
   };
 
+  const handleClick = () => {
+    router.push(`/recipe/${data.id}`)
+  }
+
   return (
-    <Link href={`/recipe/${data.id}`}>
-      <div className="bg-white rounded-lg shadow-lg cursor-pointer transition ease-in-out hover:-translate-y-1 hover:scale-110">
+      <div className="bg-white rounded-lg shadow-lg cursor-pointer transition ease-in-out hover:-translate-y-1 hover:scale-110"  onClick={handleClick}>
           <div>
             <Image className="object-cover rounded-t-lg object-center w-full h-auto m-auto"  src={data.recipe_image ?? Logo} alt="Card Image" width={300} height={300}/>          
           </div>
@@ -60,6 +65,5 @@ export default function RecipeCard({data}: Recipe) {
               </div>
           </div>
       </div>
-    </Link>
   )
 }

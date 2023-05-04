@@ -23,6 +23,7 @@
     "react-dropzone": "~14.2.3",
     "react-feather": "~2.0.10",
     "react-toastify": "~9.1.2",
+    "sharp": "~0.32.1",
     "typescript": "5.0.2",
     "uuid": "~9.0.0",
     "zod": "~3.21.4"

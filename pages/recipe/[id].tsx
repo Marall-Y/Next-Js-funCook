@@ -58,7 +58,7 @@ export default function RecipeView ({recipe} : {recipe: Recipe}) {
             </div>
           </div>
         </div>
-        <div className="rounded-lg shadow-lg h-24">
+        <div className="rounded-lg shadow-lg h-24 mb-5">
           <Image className="object-cover rounded-lg object-center w-full h-auto"  src={recipe.recipe_image ?? bg} alt="Card Image" width={500} height={1000}/>                 
         </div>
       </div>
