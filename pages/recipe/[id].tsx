@@ -27,7 +27,7 @@ export default function RecipeView ({recipe} : {recipe: Recipe}) {
       <>
       <div className="flex w-full w-100" style={{height: '30rem'}}>
         <video autoPlay loop muted playsInline className='w-full h-full object-cover'>
-          <source src="https://otmhkfujxehpaywcdtxa.supabase.co/storage/v1/object/public/funCookStorage/video-2.mp4?t=2023-05-03T14%3A57%3A55.066Z"/>
+          <source src="https://otmhkfujxehpaywcdtxa.supabase.co/storage/v1/object/public/funCookStorage/video-2_.mp4"/>
         </video>      
       </div>
       <div className="flex justify-between mx-48 px-20 py-32 rounded-lg shadow-lg border-2">
