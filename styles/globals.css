@@ -35,7 +35,8 @@ button:disabled {
 }
 
 .numbered-list-text {
-  margin-left: 1rem
+  margin-left: 1rem;
+  line-height: 1.8;
 }
 
 .check-icon {
