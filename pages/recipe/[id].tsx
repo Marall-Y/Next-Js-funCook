@@ -25,8 +25,20 @@ interface Recipe {
       cooking_time: string;
   }
 
+interface FeedBack {
+    id: number;
+    user_image: string | null;
+    comment: string;
+    rating: number;
+    author: string;
+}
+
 export default function RecipeView ({recipe} : {recipe: Recipe}) {
   const [feedback, setFeedback] = useState("")
+  const [feedbacks, setFeedbacks] = useState<FeedBack[]>([
+    {id: 1, user_image: null, comment: 'Have made these many times, and I always increase the quantity because they freeze so well. Like other reviewers my ratio of salmon to other ingredients is much higher. Recently I used a beautiful 1.4 lb wild sockeye filet from Costco but all other ingredients are the same quantity as in the recipe. To cut prep time, now I also chop all veggies in my Cuisinart (pulsing and watching closely until chopped but not puréed).', rating: 3, author: 'Maral Yousefi'},
+    {id: 1, user_image: null, comment: 'Have made these many times, and I always increase the quantity because they freeze so well. Like other reviewers my ratio of salmon to other ingredients is much higher. Recently I used a beautiful 1.4 lb wild sockeye filet from Costco but all other ingredients are the same quantity as in the recipe. To cut prep time, now I also chop all veggies in my Cuisinart (pulsing and watching closely until chopped but not puréed).', rating: 3, author: 'Maral Yousefi'},
+  ])
     
     return(
       <>
@@ -80,7 +92,7 @@ export default function RecipeView ({recipe} : {recipe: Recipe}) {
             />
           </div>
         </div>
-        <div className="flex flex-col border-t-2 pt-10 px-48">
+        <div className="flex flex-col border-t-2 pt-10 px-40">
           <h3 className="text-xl font-bold">2 Reviews</h3>
           <RatingStar rating={3} isEditable={false}/>
           <div className="flex items-center mt-10">
@@ -99,10 +111,37 @@ export default function RecipeView ({recipe} : {recipe: Recipe}) {
               className="p-3 border rounded-lg flex-1 outline-none focus:ring-orange-500 focus:border-orange-500"
             />
           </div>
-          <div className="flex items-center pl-12 pt-5">
-            <span className="text-base font-bold italic mr-5 text-slate-500">Your Rating</span><RatingStar rating={0} isEditable={true}/>
+          <div className="flex items-center justify-between pl-12 pt-5">
+            <div className="flex items-center">
+              <span className="text-base font-bold italic mr-5 text-slate-500">Your Rating</span><RatingStar rating={0} isEditable={true}/>
+            </div>
+            <div className="text-right flex items-center">
+              <button 
+                // onClick={(event) => createRecipe(event)}
+                // disabled={handleDisableButton()}
+                type="submit"
+                className="px-4 py-2 font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none">
+                Submit
+              </button>
+            </div>
           </div>
         </div>
+        <div className="mt-12 mx-40 ">
+          {feedbacks.map((feedback) => {
+          return(
+          <div className="flex border-t-2 pt-10 px-38 mb-10">
+            <Image className="rounded-full h-10 w-10 object-cover mr-5" src={feedback.user_image?.replace(/"/g, '') ?? NoProfile} alt="Feedback User Image" width={300} height={300}/>
+            <div className="flex flex-col">
+              <h3 className="text-base font-bold italic mr-5 mb-2">{feedback.author}</h3>
+              <RatingStar rating={feedback.rating} isEditable={false}/>
+              <p className="text-slate-500 mt-5">
+                {feedback.comment}
+              </p>
+            </div>
+          </div>
+          )
+        })}
+        </div>        
       </div>
     </>
     )

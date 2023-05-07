@@ -1,8 +1,8 @@
 import { Star } from 'react-feather';
 
 interface RatingProps {
-    rating: number;
-    isEditable: boolean
+rating: number;
+isEditable: boolean
 }
 
 function RatingStars({ rating, isEditable }: RatingProps) {

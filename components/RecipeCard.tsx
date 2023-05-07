@@ -3,7 +3,6 @@ import { Clock } from "react-feather";
 import Logo from '../public/images/logo.png'
 import styles from '../styles/RecipeCard.module.css'
 import Link from "next/link";
-import { useRouter } from "next/router";
 
 interface Recipe {
   data: {
@@ -20,7 +19,6 @@ interface Recipe {
 }
 
 export default function RecipeCard({data}: Recipe) {
-  const router = useRouter()
   const createdDate = new Date(data.created_at)
 
   const handleCookingTime = (timeString: string) => {
