@@ -33,12 +33,9 @@ export default function RecipeCard({data}: Recipe) {
     );
   };
 
-  const handleClick = () => {
-    router.push(`/recipe/${data.id}`)
-  }
 
   return (
-      <div className="bg-white rounded-lg shadow-lg cursor-pointer transition ease-in-out hover:-translate-y-1 hover:scale-110"  onClick={handleClick}>
+      <Link className="bg-white rounded-lg shadow-lg cursor-pointer transition ease-in-out hover:-translate-y-1 hover:scale-110" href={`/recipe/${data.id}`}>
           <div>
             <Image className="object-cover rounded-t-lg object-center w-full h-72 m-auto"  src={data.recipe_image ?? Logo} alt="Card Image" width={300} height={300}/>          
           </div>
@@ -64,6 +61,6 @@ export default function RecipeCard({data}: Recipe) {
                   </div>
               </div>
           </div>
-      </div>
+      </Link>
   )
 }
