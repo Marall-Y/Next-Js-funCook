@@ -37,8 +37,16 @@ export default function RecipeView ({recipe} : {recipe: Recipe}) {
   const [feedback, setFeedback] = useState("")
   const [feedbacks, setFeedbacks] = useState<FeedBack[]>([
     {id: 1, user_image: null, comment: 'Have made these many times, and I always increase the quantity because they freeze so well. Like other reviewers my ratio of salmon to other ingredients is much higher. Recently I used a beautiful 1.4 lb wild sockeye filet from Costco but all other ingredients are the same quantity as in the recipe. To cut prep time, now I also chop all veggies in my Cuisinart (pulsing and watching closely until chopped but not puréed).', rating: 3, author: 'Maral Yousefi'},
-    {id: 1, user_image: null, comment: 'Have made these many times, and I always increase the quantity because they freeze so well. Like other reviewers my ratio of salmon to other ingredients is much higher. Recently I used a beautiful 1.4 lb wild sockeye filet from Costco but all other ingredients are the same quantity as in the recipe. To cut prep time, now I also chop all veggies in my Cuisinart (pulsing and watching closely until chopped but not puréed).', rating: 3, author: 'Maral Yousefi'},
+    {id: 1, user_image: null, comment: 'Have made these many times, and I always increase the quantity because they freeze so well. Like other reviewers my ratio of salmon to other ingredients is much higher. Recently I used a beautiful 1.4 lb wild sockeye filet from Costco but all other ingredients are the same quantity as in the recipe. To cut prep time, now I also chop all veggies in my Cuisinart (pulsing and watching closely until chopped but not puréed).', rating: 4, author: 'Maral Yousefi'},
   ])
+
+  const handleRecipeRating = () => {
+    const ratingArray = feedbacks.map((item) => item.rating)
+    const sum = ratingArray.reduce((acc, curr) => acc + curr, 0);
+    const average = sum / ratingArray.length; 
+
+    return average
+  }
     
     return(
       <>
@@ -50,8 +58,13 @@ export default function RecipeView ({recipe} : {recipe: Recipe}) {
       <div className="flex flex-col mx-48 px-20 py-32 rounded-lg shadow-lg border-2">
         <div className="flex justify-between ">
           <div className="mr-4 p-10 pt-0" style={{flex: '70%'}}>
-            <h1 className="font-bold text-gray-700 text-3xl italic tracking-wide mb-2">{recipe?.recipe_name}</h1>
-            <h3 className="text-base text-slate-400 mb-12">Reviewd By 1000 People</h3>
+            <div className="flex items-center">
+              <Image className="rounded-full h-10 w-10 object-cover mr-5" src={recipe.user_image?.replace(/"/g, '') ?? NoProfile} alt="Feedback User Image" width={300} height={300}/>
+              <div className="flex flex-col">
+                <h1 className="font-bold text-gray-700 text-3xl italic tracking-wide mb-2">{recipe?.recipe_name}</h1>
+                <RatingStar rating={handleRecipeRating()} isEditable={false}/>
+              </div>
+            </div>           
             <div className="flex mt-10">
               <h2 className="font-bold text-gray-700 text-2xl italic tracking-wide mr-7">Ingredients:</h2>
               <div>
