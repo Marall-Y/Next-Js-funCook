@@ -1,12 +1,13 @@
 import { supabaseClient } from "@/utils/supabase"
-import { GetStaticPaths, GetStaticProps } from "next"
+import { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next"
 import bg from '../../public/images/recipe cart.jpg'
 import Image from "next/image";
 import { Check } from "react-feather";
 import RatingStar from "@/components/RatingStars";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut, useAuth, useUser } from "@clerk/nextjs";
 import NoProfile from '../../public/images/no-pic.jpg'
 import { useState } from "react";
+import ReactStars from 'react-stars'
 
 type RecipeParams = {
     id: string;
@@ -28,26 +29,59 @@ interface Recipe {
 interface FeedBack {
     id: number;
     user_image: string | null;
-    comment: string;
+    review: string;
     rating: number;
     author: string;
 }
 
-export default function RecipeView ({recipe} : {recipe: Recipe}) {
-  const [feedback, setFeedback] = useState("")
-  const [feedbacks, setFeedbacks] = useState<FeedBack[]>([
-    {id: 1, user_image: null, comment: 'Have made these many times, and I always increase the quantity because they freeze so well. Like other reviewers my ratio of salmon to other ingredients is much higher. Recently I used a beautiful 1.4 lb wild sockeye filet from Costco but all other ingredients are the same quantity as in the recipe. To cut prep time, now I also chop all veggies in my Cuisinart (pulsing and watching closely until chopped but not puréed).', rating: 3, author: 'Maral Yousefi'},
-    {id: 1, user_image: null, comment: 'Have made these many times, and I always increase the quantity because they freeze so well. Like other reviewers my ratio of salmon to other ingredients is much higher. Recently I used a beautiful 1.4 lb wild sockeye filet from Costco but all other ingredients are the same quantity as in the recipe. To cut prep time, now I also chop all veggies in my Cuisinart (pulsing and watching closely until chopped but not puréed).', rating: 4, author: 'Maral Yousefi'},
-  ])
+export default function RecipeView ({recipe, feedbacks} : {recipe: Recipe, feedbacks: FeedBack[]}) {
+  const {getToken} = useAuth()
+  const {user} = useUser()
+  const [review, setReview] = useState<string>("")
+  const [rating, setRating] = useState<number | null> (null)
+  const [comments, setComments] = useState<FeedBack[] | null>(feedbacks)
 
   const handleRecipeRating = () => {
     const ratingArray = feedbacks.map((item) => item.rating)
     const sum = ratingArray.reduce((acc, curr) => acc + curr, 0);
     const average = sum / ratingArray.length; 
-
     return average
   }
-    
+
+  const handleRating = (newRating: number) => {
+    setRating(newRating)
+  }
+
+
+  const createReview = async () => {
+    const token = await getToken({template: 'supabase'})
+    const response = await supabaseClient({ supabaseAccessToken: token!, requireAuthorization: true })
+    const {error, status} = await response.from('Review').insert(
+      {
+        recipe_id: recipe.id,
+        user_id : user?.id,
+        user_image: user?.profileImageUrl,
+        author: user?.fullName,
+        review,
+        rating,
+      },
+    );
+
+    if (status == 201){
+      setRating(null)
+      setReview("")
+      const { data } = await response
+      .from('Review')
+      .select('*')
+      .eq('recipe_id', recipe.id)
+
+      setComments(data)
+    } else {
+      console.log(error)
+    }
+
+  }
+
     return(
       <>
       <div className="flex w-full w-100" style={{height: '30rem'}}>
@@ -62,7 +96,7 @@ export default function RecipeView ({recipe} : {recipe: Recipe}) {
               <Image className="rounded-full h-10 w-10 object-cover mr-5" src={recipe.user_image?.replace(/"/g, '') ?? NoProfile} alt="Feedback User Image" width={300} height={300}/>
               <div className="flex flex-col">
                 <h1 className="font-bold text-gray-700 text-3xl italic tracking-wide mb-2">{recipe?.recipe_name}</h1>
-                <RatingStar rating={handleRecipeRating()} isEditable={false}/>
+                <RatingStar rating={handleRecipeRating()}/>
               </div>
             </div>           
             <div className="flex mt-10">
@@ -107,10 +141,10 @@ export default function RecipeView ({recipe} : {recipe: Recipe}) {
         </div>
         <div className="flex flex-col border-t-2 pt-10 px-40">
           <h3 className="text-xl font-bold">2 Reviews</h3>
-          <RatingStar rating={3} isEditable={false}/>
+          <RatingStar rating={handleRecipeRating()}/>
           <div className="flex items-center mt-10">
             <SignedIn>
-              <Image className="rounded-full h-10 w-10 object-cover mr-2" src={recipe.user_image.replace(/"/g, '')} alt="User Image" width={300} height={300}/>
+              <Image className="rounded-full h-10 w-10 object-cover mr-2" src={user?.profileImageUrl?.replace(/"/g, '') ?? NoProfile} alt="User Image" width={300} height={300}/>
             </SignedIn>
             <SignedOut>
               <Image className="rounded-full h-10 w-10 object-cover mr-2" src={NoProfile} alt="User Image" width={300} height={300}/>
@@ -118,20 +152,26 @@ export default function RecipeView ({recipe} : {recipe: Recipe}) {
             <textarea
               id="feedback"
               name="feedback"
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
+              value={review}
+              onChange={(e) => setReview(e.target.value)}
               placeholder="What do you think about this recipe?"
               className="p-3 border rounded-lg flex-1 outline-none focus:ring-orange-500 focus:border-orange-500"
             />
           </div>
           <div className="flex items-center justify-between pl-12 pt-5">
             <div className="flex items-center">
-              <span className="text-base font-bold italic mr-5 text-slate-500">Your Rating</span><RatingStar rating={0} isEditable={true}/>
+              <span className="text-base font-bold italic mr-5 text-slate-500">Your Rating</span>
+              <ReactStars
+              count={5}
+              onChange={handleRating}
+              size={30}
+              color2={'#ffd700'} 
+              />
             </div>
             <div className="text-right flex items-center">
               <button 
-                // onClick={(event) => createRecipe(event)}
-                // disabled={handleDisableButton()}
+                onClick={createReview}
+                disabled={!rating || review == ""}
                 type="submit"
                 className="px-4 py-2 font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none">
                 Submit
@@ -140,15 +180,15 @@ export default function RecipeView ({recipe} : {recipe: Recipe}) {
           </div>
         </div>
         <div className="mt-12 mx-40 ">
-          {feedbacks.map((feedback) => {
+          {comments?.map((feedback) => {
           return(
           <div className="flex border-t-2 pt-10 px-38 mb-10">
             <Image className="rounded-full h-10 w-10 object-cover mr-5" src={feedback.user_image?.replace(/"/g, '') ?? NoProfile} alt="Feedback User Image" width={300} height={300}/>
             <div className="flex flex-col">
               <h3 className="text-base font-bold italic mr-5 mb-2">{feedback.author}</h3>
-              <RatingStar rating={feedback.rating} isEditable={false}/>
+              <RatingStar rating={feedback.rating}/>
               <p className="text-slate-500 mt-5">
-                {feedback.comment}
+                {feedback.review}
               </p>
             </div>
           </div>
@@ -187,10 +227,16 @@ export const getStaticPaths: GetStaticPaths<RecipeParams> = async () => {
       .select('*')
       .eq('id', +params.id)
       .single();
-  
+    
+    const { data: feedbacks } = await response
+      .from('Review')
+      .select('*')
+      .eq('recipe_id', +params.id)
+    
     return {
       props: {
-        recipe: data
+        recipe: data,
+        feedbacks
       }
     };
   };

@@ -2,15 +2,14 @@ import { Star } from 'react-feather';
 
 interface RatingProps {
 rating: number;
-isEditable: boolean
 }
 
-function RatingStars({ rating, isEditable }: RatingProps) {
+function RatingStars({ rating}: RatingProps) {
     const fullStars = Math.floor(rating)
     const emptyStars = 5 - fullStars;
 
     return (
-    <div className="flex">
+    <div className={`flex`}>
         {Array.from({ length: fullStars }, (star, index) => (
         <Star key={index} className="text-yellow-400" fill="rgb(250 204 21)" size={20}/>
         ))}

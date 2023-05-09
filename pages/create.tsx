@@ -8,7 +8,6 @@ import foodGif from '../public/images/create-recipe-success.gif'
 import Dropdown from "@/components/Dropdown"
 import FileUploader from "@/components/ImageUploader"
 import { v4 as uuidv4 } from 'uuid';
-import { createClient } from "@supabase/supabase-js"
 
 
 type Recipe = {
