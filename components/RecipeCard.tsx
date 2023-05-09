@@ -39,11 +39,11 @@ export default function RecipeCard({data}: Recipe) {
           </div>
           <div className="px-4 py-3 flex items-center text-slate-400"><Clock className="text-slate-400 mr-1" size={20}/>{handleCookingTime(data.cooking_time)}</div>
           <div className="flex flex-col px-4">
-              <h1 className="font-bold my-2 text-base text-slate-600">{data.recipe_name}</h1>
+              <h5 className="my-2 text-slate-600">{data.recipe_name}</h5>
               <div className="h-12">
-                <h2 className={`font-bold my-2 text-base text-slate-400 leading-7 ${styles.show_three_rows}`}>
+                <h5 className={`my-2 text-slate-400 leading-7 ${styles.show_three_rows}`}>
                 {data.steps?.join(',')}
-                </h2>
+                </h5>
               </div>
               <div className="flex items-center justify-start mb-10 mt-16">
                   <Image className="rounded-full h-12 w-12 object-cover mr-2" src={data.user_image.replace(/"/g, '')} alt="User Image" width={300} height={300}/>

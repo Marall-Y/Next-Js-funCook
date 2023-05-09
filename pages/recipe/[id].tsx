@@ -42,9 +42,12 @@ export default function RecipeView ({recipe, feedbacks} : {recipe: Recipe, feedb
   const [comments, setComments] = useState<FeedBack[] | null>(feedbacks)
 
   const handleRecipeRating = () => {
-    const ratingArray = feedbacks.map((item) => item.rating)
-    const sum = ratingArray.reduce((acc, curr) => acc + curr, 0);
-    const average = sum / ratingArray.length; 
+    let average
+    const ratingArray = comments?.map((item) => item.rating)
+    const sum = ratingArray?.reduce((acc, curr) => acc + curr, 0);
+    if (sum && ratingArray?.length) {
+      average = sum / ratingArray?.length
+    }
     return average
   }
 
@@ -74,12 +77,10 @@ export default function RecipeView ({recipe, feedbacks} : {recipe: Recipe, feedb
       .from('Review')
       .select('*')
       .eq('recipe_id', recipe.id)
-
-      setComments(data)
+      setComments(data as FeedBack[])
     } else {
       console.log(error)
     }
-
   }
 
     return(
@@ -93,14 +94,14 @@ export default function RecipeView ({recipe, feedbacks} : {recipe: Recipe, feedb
         <div className="flex justify-between ">
           <div className="mr-4 p-10 pt-0" style={{flex: '70%'}}>
             <div className="flex items-center">
-              <Image className="rounded-full h-10 w-10 object-cover mr-5" src={recipe.user_image?.replace(/"/g, '') ?? NoProfile} alt="Feedback User Image" width={300} height={300}/>
+              <Image className="rounded-full h-10 w-10 object-cover mr-5" src={recipe?.user_image?.replace(/"/g, '') ?? NoProfile} alt="Feedback User Image" width={300} height={300}/>
               <div className="flex flex-col">
-                <h1 className="font-bold text-gray-700 text-3xl italic tracking-wide mb-2">{recipe?.recipe_name}</h1>
+                <h2 className="text-gray-700 italic tracking-wide mb-2">{recipe?.recipe_name}</h2>
                 <RatingStar rating={handleRecipeRating()}/>
               </div>
             </div>           
             <div className="flex mt-10">
-              <h2 className="font-bold text-gray-700 text-2xl italic tracking-wide mr-7">Ingredients:</h2>
+              <h3 className="text-gray-700 italic tracking-wide mr-7">Ingredients:</h3>
               <div>
                 {recipe?.ingredients?.map((ingredient, index) => {
                   return <div key={ingredient} className="mb-8">
@@ -110,7 +111,7 @@ export default function RecipeView ({recipe, feedbacks} : {recipe: Recipe, feedb
               </div>
             </div>
             <div className="flex mt-10 border-t-2 pt-10">
-              <h2 className="font-bold text-gray-700 text-2xl italic tracking-wide mr-24">Steps:</h2>
+              <h3 className="text-gray-700 talic tracking-wide mr-24">Steps:</h3>
               <div className="pr-32">
                 {recipe?.steps?.map((step, index) => {
                   return (
@@ -140,7 +141,7 @@ export default function RecipeView ({recipe, feedbacks} : {recipe: Recipe, feedb
           </div>
         </div>
         <div className="flex flex-col border-t-2 pt-10 px-40">
-          <h3 className="text-xl font-bold">2 Reviews</h3>
+          <h3>{comments?.length} Reviews</h3>
           <RatingStar rating={handleRecipeRating()}/>
           <div className="flex items-center mt-10">
             <SignedIn>
@@ -180,12 +181,12 @@ export default function RecipeView ({recipe, feedbacks} : {recipe: Recipe, feedb
           </div>
         </div>
         <div className="mt-12 mx-40 ">
-          {comments?.map((feedback) => {
+          {comments?.map((feedback, index) => {
           return(
-          <div className="flex border-t-2 pt-10 px-38 mb-10">
+          <div key={index} className="flex border-t-2 pt-10 px-38 mb-10">
             <Image className="rounded-full h-10 w-10 object-cover mr-5" src={feedback.user_image?.replace(/"/g, '') ?? NoProfile} alt="Feedback User Image" width={300} height={300}/>
             <div className="flex flex-col">
-              <h3 className="text-base font-bold italic mr-5 mb-2">{feedback.author}</h3>
+              <h5 className="italic mr-5 mb-2">{feedback.author}</h5>
               <RatingStar rating={feedback.rating}/>
               <p className="text-slate-500 mt-5">
                 {feedback.review}

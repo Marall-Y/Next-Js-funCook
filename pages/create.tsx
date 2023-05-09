@@ -252,8 +252,8 @@ return (
           <div>
             <Image src={foodGif} alt="food.gif" width={200} height={200}/>
           </div>
-          <h2 className="font-bold text-2xl mt-5">Great job! Your recipe has been successfully created.</h2>
-          <h4 className="text-md mt-3 text-gray-600">You can now view your posted recipes on your recipe page.</h4>
+          <h3 className="mt-5">Great job! Your recipe has been successfully created.</h3>
+          <h5 className="mt-3 text-gray-600">You can now view your posted recipes on your recipe page.</h5>
           <div className="flex justify-center items-center mt-10">
               <button 
                 // onClick={(event) => createRecipe(event)}

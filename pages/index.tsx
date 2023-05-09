@@ -32,7 +32,7 @@ const Home: React.FC<Props> = ({ recipes }) => {
   return (
   <>
   <div className="flex flex-col justify-center items-center w-full bg-orange-100 p-10">
-    <h1 className="font-bold mb-5 mt-20 text-5xl tracking-wide text-slate-600 ">Find a Recipe</h1>
+    <h1 className="mb-5 mt-20 tracking-wide text-slate-600 ">Find a Recipe</h1>
     <div className="relative mb-5 flex items-center z-10">
       <Search size={25} className="absolute top-3 left-3 text-slate-400"/>
       <input
