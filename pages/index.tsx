@@ -28,6 +28,28 @@ interface Props {
 
 const Home: React.FC<Props> = ({ recipes }) => {
   const [searchTerm, setSearchTerm] = useState("")
+  const [recipeList, setRecipeList] = useState (recipes)
+  const [filteredOptions, setFilteredOptions] = useState<Recipe[]>([]);
+
+  const handleInputChange = (e : React.ChangeEvent<HTMLInputElement>) => {
+    const newSearchTerm = e.target.value
+    setSearchTerm(newSearchTerm)
+
+    // Filter the options based on the search term
+    const filtered = recipes.filter((recipe) =>
+      recipe.recipe_name.toLowerCase().includes(newSearchTerm.toLowerCase())
+    );
+    //not show anything if the user entered space without any word
+    (newSearchTerm !== " " && newSearchTerm !== "") && setFilteredOptions(filtered);
+    // reset search
+    (newSearchTerm === " " || newSearchTerm === "") && setRecipeList(recipes)
+  };
+
+  const handleSearch = (searchedItem: string) => {
+    setFilteredOptions([])
+    const filteredRecipes = recipes.filter(item => item.recipe_name === searchedItem)
+    setRecipeList(filteredRecipes)
+  }
 
   return (
   <>
@@ -38,10 +60,25 @@ const Home: React.FC<Props> = ({ recipes }) => {
       <input
         type="text"
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={(e) => handleInputChange(e)}
         style={{width: '37rem'}}
-        className="bg-white h-12 px-10 pr-10 text-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+        className="bg-white h-12 px-12 pr-10 text-md focus:outline-none focus:ring-2 focus:ring-orange-500"
       />
+       {filteredOptions.length > 0 && (
+        <ul 
+        className="absolute top-full left-0 bg-white list-none p-0 mt-2 shadow-md cursor-pointer" 
+        style={{width: '37rem'}}>
+          {filteredOptions.map((recipe, index) => (
+            <li
+              key={index}
+              onClick={() => handleSearch(recipe.recipe_name)}
+              style={{ padding: "0.5rem", borderBottom: "1px solid #ccc" }}
+            >
+              {recipe.recipe_name}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
     <div className="relative">
       <Image src={Food1} alt="food gif1" width={500} height={500} className="absolute top-[-12rem] left-[-36rem] animate__animated animate__bounceInLeft "/>
@@ -50,7 +87,7 @@ const Home: React.FC<Props> = ({ recipes }) => {
     </div>
   </div>
   <div className={`grid gap-20 px-48 md:grid-cols-3 sm:grid-cols-2 max-[1024px]:px-32 py-32`}>
-    {recipes.map((recipe) => {
+    {recipeList.map((recipe) => {
       return <RecipeCard key={recipe.id} data={recipe}/>
     })}
   </div>
